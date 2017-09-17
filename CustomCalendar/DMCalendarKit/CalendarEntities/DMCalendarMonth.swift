@@ -19,7 +19,7 @@ class DMCalendarMonth: NSObject {
     var today: DMCalendarDay!
     var daysOfMonth: [DMCalendarDay] = []
     
-    init(date: NSDate){
+    init(date: Date){
         super.init()
         self.today = DMCalendarDay(date: date)
         self.calculateMonth()
@@ -43,7 +43,7 @@ class DMCalendarMonth: NSObject {
         self.calculateMonth()
     }
     
-    private func calculateMonth(){
+    fileprivate func calculateMonth(){
         self.numberOfDays = DMCalendarDateUtil.numberOfDaysInMonth(self.today.month, year: self.today.year)
         self.year = self.today.year
         self.month = self.today.month
@@ -53,7 +53,7 @@ class DMCalendarMonth: NSObject {
         }
     }
     
-    func calDayAtDay(day: NSInteger)->DMCalendarDay?{
+    func calDayAtDay(_ day: NSInteger)->DMCalendarDay?{
         let index: NSInteger = day - 1
         if index < 0 || index > 31{
             return nil
@@ -74,10 +74,10 @@ class DMCalendarMonth: NSObject {
         var month = self.month + 1
         let day = 1
         if month > kLastMonthOfYear{
-            year = year + 1
+            year = year! + 1
             month = 1
         }
-        return DMCalendarMonth(month: month, year: year, day: day)
+        return DMCalendarMonth(month: month, year: year!, day: day)
     }
     
     func previousMonth()->DMCalendarMonth{
@@ -85,18 +85,18 @@ class DMCalendarMonth: NSObject {
         var month = self.month - 1
         let day = 1
         if month < kFirstMonthOfYear{
-            year = year - 1
+            year = year! - 1
             month = 12
         }
-        return DMCalendarMonth(month: month, year: year, day: day)
+        return DMCalendarMonth(month: month, year: year!, day: day)
     }
     
-    func getLastFewDays(num: Int)->[DMCalendarDay]{
+    func getLastFewDays(_ num: Int)->[DMCalendarDay]{
         var tempDays:[DMCalendarDay] = []
         if num <= 0 || num >= 31{
             return tempDays
         }
-        for i in (1...num).reverse(){
+        for i in (1...num).reversed(){
             let day = self.daysOfMonth[self.numberOfDays - i]
             day.isCurrentMonthDay = false
             tempDays.append(day)
@@ -104,7 +104,7 @@ class DMCalendarMonth: NSObject {
         return tempDays
     }
     
-    func getHeaderFewDays(num: Int)->[DMCalendarDay]{
+    func getHeaderFewDays(_ num: Int)->[DMCalendarDay]{
         var tempDays:[DMCalendarDay] = []
         for i in 0..<num{
             let day = self.daysOfMonth[i]
@@ -121,10 +121,10 @@ class DMCalendarMonth: NSObject {
      
      - returns: 日期在当月中的第几天
      */
-    func isContainDay(calDay: DMCalendarDay)->Int{
+    func isContainDay(_ calDay: DMCalendarDay)->Int{
         var tempIndex: Int = -1
-        for (index, day) in self.daysOfMonth.enumerate(){
-            if day.compareWithCalDay(calDay) == NSComparisonResult.OrderedSame{
+        for (index, day) in self.daysOfMonth.enumerated(){
+            if day.compareWithCalDay(calDay) == ComparisonResult.orderedSame{
                 tempIndex = index
             }
         }

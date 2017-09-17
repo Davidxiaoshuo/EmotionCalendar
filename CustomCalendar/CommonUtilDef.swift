@@ -9,11 +9,11 @@
 import UIKit
 
 //Color
-func RGBA(r:CGFloat, g:CGFloat, b:CGFloat, a:CGFloat) ->UIColor {
+func RGBA(_ r:CGFloat, g:CGFloat, b:CGFloat, a:CGFloat) ->UIColor {
     return UIColor (red: r/255.0, green: g/255.0, blue: b/255.0, alpha: a)
 }
 
-func UIColorFromHexRGB(rgbValue:UInt32,alpha:CGFloat)->UIColor{
+func UIColorFromHexRGB(_ rgbValue:UInt32,alpha:CGFloat)->UIColor{
     return UIColor(red: (CGFloat)((rgbValue & 0xFF0000) >> 16) / 255.0, green: (CGFloat)((rgbValue & 0x00FF00) >> 8) / 255.0, blue: (CGFloat)(rgbValue & 0x0000FF) / 255.0, alpha: alpha)
 }
 
@@ -30,5 +30,5 @@ func UIColorRandom()->UIColor{
 
 
 //Version
-func IS_IOS7_OR_HEIGHER() ->Bool { return (UIDevice.currentDevice().systemVersion as NSString).doubleValue >= 7.0 }
-func IS_IOS8_OR_HEIGHER() ->Bool { return (UIDevice.currentDevice().systemVersion as NSString).doubleValue >= 8.0 }
+func IS_IOS7_OR_HEIGHER() ->Bool { return (UIDevice.current.systemVersion as NSString).doubleValue >= 7.0 }
+func IS_IOS8_OR_HEIGHER() ->Bool { return (UIDevice.current.systemVersion as NSString).doubleValue >= 8.0 }

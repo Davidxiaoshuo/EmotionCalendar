@@ -30,8 +30,8 @@ class DMCalendarView: UIView {
         self.layer.masksToBounds = true
         self.layer.cornerRadius = 5
         self.layer.borderWidth = 1.0
-        self.layer.borderColor = UIColorFromHexRGB(0xeeeeee, alpha: 1).CGColor
-        self.backgroundColor = UIColor.whiteColor()
+        self.layer.borderColor = UIColorFromHexRGB(0xeeeeee, alpha: 1).cgColor
+        self.backgroundColor = UIColor.white
         
         self.setupCalendarHeaderView()
         self.setupCalendarWeekDayView()
@@ -39,7 +39,10 @@ class DMCalendarView: UIView {
     }
     
     func setupCalendarHeaderView(){
-        self.calendarHeaderView = DMCalendarHeaderView(frame: CGRectMake(0, 0, self.frame.width, kDefaultCalendarHeaderViewHeight))
+        self.calendarHeaderView = DMCalendarHeaderView(frame: CGRect(x: 0,
+                                                                     y: 0,
+                                                                     width: self.frame.width,
+                                                                     height: kDefaultCalendarHeaderViewHeight))
         self.calendarHeaderView.backgroundColor = UIColorFromHexRGB(0x8da2d2, alpha: 1)
         self.calendarHeaderView.todayDateLabel.text = "August 31"
         self.calendarHeaderView.drawBottomLineForView(lineColor: UIColorFromHexRGB(0x4d6dbb, alpha: 1), lineWidth: 1)
@@ -54,25 +57,33 @@ class DMCalendarView: UIView {
         }
         
         self.calendarHeaderView.goBackBlk = { [weak self](headerView) in
-            self?.changeMonthHandle(DMCalendarMonth(date: NSDate()))
+            self?.changeMonthHandle(DMCalendarMonth(date: Date()))
         }
         
         self.addSubview(calendarHeaderView)
     }
     
     func setupCalendarWeekDayView(){
-        self.calendarWeekDayView = DMCalendarWeekDayView(frame: CGRectMake(0, kDefaultCalendarHeaderViewHeight, self.frame.width, kDefaultWeekDayViewHeight), marginLeftRight: 0)
+        self.calendarWeekDayView = DMCalendarWeekDayView(frame: CGRect(x: 0,
+                                                                       y: kDefaultCalendarHeaderViewHeight,
+                                                                       width: self.frame.width,
+                                                                       height: kDefaultWeekDayViewHeight),
+                                                         marginLeftRight: 0)
         self.backgroundColor = UIColorFromHexRGB(0xf6f9f9, alpha: 1)
         self.addSubview(calendarWeekDayView)
     }
     
     func setupCalendarContentView(){
-        self.calendarContentView = DMCalendarContentView(frame: CGRectMake(0, kDefaultCalendarHeaderViewHeight+kDefaultWeekDayViewHeight, self.frame.width, self.frame.height - kDefaultCalendarHeaderViewHeight-kDefaultWeekDayViewHeight), marginLeftRight: 0)
+        self.calendarContentView = DMCalendarContentView(frame: CGRect(x: 0,
+                                                                       y: kDefaultCalendarHeaderViewHeight+kDefaultWeekDayViewHeight,
+                                                                       width: self.frame.width,
+                                                                       height: self.frame.height - kDefaultCalendarHeaderViewHeight-kDefaultWeekDayViewHeight),
+                                                         marginLeftRight: 0)
         self.addSubview(calendarContentView)
     }
     
     func initializeDate(){
-        self.currenShowCalendarMonth = DMCalendarMonth(date: NSDate())
+        self.currenShowCalendarMonth = DMCalendarMonth(date: Date())
         self.changeMonthHandle(currenShowCalendarMonth)
         
         //calendar header data
@@ -88,12 +99,12 @@ class DMCalendarView: UIView {
         self.changeMonthHandle(self.currenShowCalendarMonth.previousMonth())
     }
     
-    func changeMonthHandle(currentCalendarMonth: DMCalendarMonth){
+    func changeMonthHandle(_ currentCalendarMonth: DMCalendarMonth){
         self.currenShowCalendarMonth = currentCalendarMonth
         let firstDayOfMonth = self.currenShowCalendarMonth.firstDay()
         let lastDayOfMonth = self.currenShowCalendarMonth.lastDay()
-        let firstDayOfWeekDay = firstDayOfMonth.weekDay
-        let lastDayOfWeekDay = lastDayOfMonth.weekDay
+        let firstDayOfWeekDay = firstDayOfMonth.weekDay!
+        let lastDayOfWeekDay = lastDayOfMonth.weekDay!
         
         let previousMonth = self.currenShowCalendarMonth.previousMonth()
         let nextMonth = self.currenShowCalendarMonth.nextMonth()
@@ -106,23 +117,20 @@ class DMCalendarView: UIView {
         self.dealDataWithEmotionType(emotioinData.timestamps, emotioinTypes: emotioinData.emotioinTypes)
         
         var showDays: [DMCalendarDay] = []
-        showDays.appendContentsOf(lastFewDays)
-        showDays.appendContentsOf(self.currenShowCalendarMonth.daysOfMonth)
-        showDays.appendContentsOf(headerFewDays)
+        showDays.append(contentsOf: lastFewDays)
+        showDays.append(contentsOf: self.currenShowCalendarMonth.daysOfMonth)
+        showDays.append(contentsOf: headerFewDays)
         self.calendarContentView.cellEntitis = showDays
     }
     
-    
-    
-    
-    func dealDataWithEmotionType(timestamps:[String], emotioinTypes:[Emotion]){
+    func dealDataWithEmotionType(_ timestamps:[String], emotioinTypes:[Emotion]){
         var tempCalendarDay: [DMCalendarDay] = []
         for timestamp in timestamps{
             let date = DMDateFormatUtils.formatTimestampToDate(timestamp)
             tempCalendarDay.append(DMCalendarDay(date: date))
         }
         
-        for(index, value) in tempCalendarDay.enumerate(){
+        for(index, value) in tempCalendarDay.enumerated(){
             let tempIndex = self.currenShowCalendarMonth.isContainDay(value)
             if tempIndex != -1{
                 self.currenShowCalendarMonth.daysOfMonth[tempIndex].emotionType = emotioinTypes[index]
@@ -136,7 +144,7 @@ class DMCalendarView: UIView {
      - returns: August 16
      */
     func getCurrentDate()->String{
-        let todayMonth = DMCalendarMonth(date: NSDate())
+        let todayMonth = DMCalendarMonth(date: Date())
         var currentMonth = Month.January
         switch todayMonth.month {
         case 1:
@@ -166,22 +174,22 @@ class DMCalendarView: UIView {
         default:
             break
         }
-        let resultStr: String = currentMonth.rawValue + " \(todayMonth.today.day)"
+        let resultStr: String = currentMonth.rawValue + " \(todayMonth.today.day ?? 1)"
         return resultStr
     }
     
-    func changeMonthWithAnimation(next: Bool){
+    func changeMonthWithAnimation(_ next: Bool){
         var animtionOption: UIViewAnimationTransition!
         if next{
-            animtionOption = .CurlUp
+            animtionOption = .curlUp
         }else{
-            animtionOption = .CurlDown
+            animtionOption = .curlDown
         }
-        UIView .animateWithDuration(0.3, animations: { 
-            UIView.setAnimationTransition(animtionOption, forView: self.calendarContentView, cache: true)
-            }) { (finished) in
+        UIView .animate(withDuration: 0.3, animations: { 
+            UIView.setAnimationTransition(animtionOption, for: self.calendarContentView, cache: true)
+            }, completion: { (finished) in
                 
-        }
+        }) 
     }
     
     
@@ -191,8 +199,8 @@ class DMCalendarView: UIView {
         timestamps.append("1472832000")
         
         var emotionTypes:[Emotion] = []
-        emotionTypes.append(.Happy)
-        emotionTypes.append(.Cry)
+        emotionTypes.append(.happy)
+        emotionTypes.append(.cry)
         
         return (timestamps, emotionTypes)
     }

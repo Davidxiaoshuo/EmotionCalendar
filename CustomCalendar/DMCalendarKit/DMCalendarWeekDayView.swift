@@ -41,12 +41,12 @@ class DMCalendarWeekDayView: UIView {
     func setupWeekDays(){
         let itemWidth = (self.frame.width - (self.marginLeftAndRight) * 2) / CGFloat(self.weekDay.count)
         var currentFrameX: CGFloat = marginLeftAndRight
-        for (_, value) in self.weekDay.enumerate(){
-            let weekDayItemLabel = UILabel(frame: CGRectMake(currentFrameX, 0, itemWidth, self.frame.height))
-            weekDayItemLabel.textAlignment = .Center
+        for (_, value) in self.weekDay.enumerated(){
+            let weekDayItemLabel = UILabel(frame: CGRect(x: currentFrameX, y: 0, width: itemWidth, height: self.frame.height))
+            weekDayItemLabel.textAlignment = .center
             weekDayItemLabel.text = value.rawValue
             weekDayItemLabel.textColor = UIColorFromHexRGB(0x4b6bbb, alpha: 1)
-            weekDayItemLabel.font = UIFont.systemFontOfSize(11)
+            weekDayItemLabel.font = UIFont.systemFont(ofSize: 11)
             self.addSubview(weekDayItemLabel)
             currentFrameX += itemWidth
         }

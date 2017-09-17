@@ -16,9 +16,9 @@ class DMCalendarHeaderView: UIView {
     var nextBtn: UIButton!
     var todayDateLabel: UILabel!
     
-    var previousBlk: ((headerView: DMCalendarHeaderView)->Void)?
-    var nextBlk: ((headerView: DMCalendarHeaderView)->Void)?
-    var goBackBlk: ((headerView: DMCalendarHeaderView)->Void)?
+    var previousBlk: ((_ headerView: DMCalendarHeaderView)->Void)?
+    var nextBlk: ((_ headerView: DMCalendarHeaderView)->Void)?
+    var goBackBlk: ((_ headerView: DMCalendarHeaderView)->Void)?
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -36,47 +36,47 @@ class DMCalendarHeaderView: UIView {
     }
     
     func setupPreviousBtn(){
-        self.previousBtn = UIButton(frame: CGRectMake(12, 0, 44, 44))
-        self.previousBtn.center = CGPointMake(self.previousBtn.center.x, self.frame.height / 2)
-        self.previousBtn.setImage(UIImage(named: "btn_top_navigation_back_normal"), forState: .Normal)
-        self.previousBtn.setImage(UIImage(named: "btn_top_navigation_back_pressed"), forState: .Highlighted)
-        self.previousBtn.addTarget(self, action: #selector(onPreviousBtnClicked(_:)), forControlEvents: .TouchUpInside)
+        self.previousBtn = UIButton(frame: CGRect(x: 12, y: 0, width: 44, height: 44))
+        self.previousBtn.center = CGPoint(x: self.previousBtn.center.x, y: self.frame.height / 2)
+        self.previousBtn.setImage(UIImage(named: "btn_top_navigation_back_normal"), for: UIControlState())
+        self.previousBtn.setImage(UIImage(named: "btn_top_navigation_back_pressed"), for: .highlighted)
+        self.previousBtn.addTarget(self, action: #selector(onPreviousBtnClicked(_:)), for: .touchUpInside)
         self.addSubview(previousBtn)
     }
     
     func setupNextBtn(){
         let frameX: CGFloat = self.frame.width - 12 - 44
-        self.nextBtn = UIButton(frame: CGRectMake(frameX, 0, 44, 44))
-        self.nextBtn.center = CGPointMake(self.nextBtn.center.x, self.frame.height / 2)
-        self.nextBtn.setImage(UIImage(named: "btn_top_navigation_back_normal"), forState: .Normal)
-        self.nextBtn.setImage(UIImage(named: "btn_top_navigation_back_pressed"), forState: .Highlighted)
-        self.nextBtn.addTarget(self, action: #selector(onNextBtnClicked(_:)), forControlEvents: .TouchUpInside)
-        self.nextBtn.transform = CGAffineTransformRotate(self.nextBtn.transform, 90 + 45)
+        self.nextBtn = UIButton(frame: CGRect(x: frameX, y: 0, width: 44, height: 44))
+        self.nextBtn.center = CGPoint(x: self.nextBtn.center.x, y: self.frame.height / 2)
+        self.nextBtn.setImage(UIImage(named: "btn_top_navigation_back_normal"), for: UIControlState())
+        self.nextBtn.setImage(UIImage(named: "btn_top_navigation_back_pressed"), for: .highlighted)
+        self.nextBtn.addTarget(self, action: #selector(onNextBtnClicked(_:)), for: .touchUpInside)
+        self.nextBtn.transform = self.nextBtn.transform.rotated(by: 90 + 45)
         self.addSubview(nextBtn)
     }
     
     func setupTodayLabel(){
         let frameWidth: CGFloat = self.frame.width - (12 + 44) * 2
-        self.todayDateLabel = UILabel(frame: CGRectMake(0, 0, frameWidth, self.frame.height))
-        self.todayDateLabel.center = CGPointMake(self.frame.width / 2, todayDateLabel.center.y)
-        self.todayDateLabel.textColor = UIColor.whiteColor()
-        self.todayDateLabel.textAlignment = .Center
-        self.todayDateLabel.font = UIFont.systemFontOfSize(17)
-        self.todayDateLabel.userInteractionEnabled = true
+        self.todayDateLabel = UILabel(frame: CGRect(x: 0, y: 0, width: frameWidth, height: self.frame.height))
+        self.todayDateLabel.center = CGPoint(x: self.frame.width / 2, y: todayDateLabel.center.y)
+        self.todayDateLabel.textColor = UIColor.white
+        self.todayDateLabel.textAlignment = .center
+        self.todayDateLabel.font = UIFont.systemFont(ofSize: 17)
+        self.todayDateLabel.isUserInteractionEnabled = true
         self.todayDateLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onGoBackToToday(_:))))
         self.addSubview(todayDateLabel)
     }
     
-    func onPreviousBtnClicked(sender: AnyObject){
-        self.previousBlk?(headerView: self)
+    func onPreviousBtnClicked(_ sender: AnyObject){
+        self.previousBlk?(self)
     }
     
-    func onNextBtnClicked(sender: AnyObject){
-        self.nextBlk?(headerView: self)
+    func onNextBtnClicked(_ sender: AnyObject){
+        self.nextBlk?(self)
     }
     
-    func onGoBackToToday(gesture: UITapGestureRecognizer){
-        self.goBackBlk?(headerView: self)
+    func onGoBackToToday(_ gesture: UITapGestureRecognizer){
+        self.goBackBlk?(self)
     }
     
 }

@@ -27,7 +27,7 @@ class ViewController: UIViewController {
     }
     
     func setupCalendarView(){
-        self.calendarView = DMCalendarView(frame: CGRectMake(9, 200, self.view.frame.width - 18, 560 / 2 + 35))
+        self.calendarView = DMCalendarView(frame: CGRect(x: 9, y: 200, width: self.view.frame.width - 18, height: 560 / 2 + 35))
         self.view.addSubview(calendarView)
     }
     

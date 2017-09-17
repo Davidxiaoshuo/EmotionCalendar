@@ -7,6 +7,30 @@
 //
 
 import UIKit
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func <= <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l <= r
+  default:
+    return !(rhs < lhs)
+  }
+}
+
 
 let kDefaultColumnNum: Int = 7
 let kDefaultCellNum: Int = 35
@@ -27,7 +51,7 @@ class DMCalendarContentView: UIScrollView {
     
     var cellNum: Int = kDefaultCellNum
     
-    private var dateCells: [UIButton] = []
+    fileprivate var dateCells: [UIButton] = []
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -40,7 +64,7 @@ class DMCalendarContentView: UIScrollView {
     }
     
     func setupSubviews(){
-        self.backgroundColor = UIColor.whiteColor()
+        self.backgroundColor = UIColor.white
         self.showsVerticalScrollIndicator = true
         self.showsHorizontalScrollIndicator = false
         self.alwaysBounceHorizontal = false
@@ -48,7 +72,7 @@ class DMCalendarContentView: UIScrollView {
         self.setupDateCells()
     }
     
-    func setupDateCells(cellEntities: [DMCalendarDay]? = nil){
+    func setupDateCells(_ cellEntities: [DMCalendarDay]? = nil){
         let cellItemWidth: CGFloat = (self.frame.width - marginLeftAndRight * 2) / CGFloat(kDefaultColumnNum)
         if cellEntities == nil || cellEntities?.count <= 0{
             cellNum = kDefaultCellNum
@@ -59,23 +83,28 @@ class DMCalendarContentView: UIScrollView {
         var currentFrameX: CGFloat = marginLeftAndRight
         var currentFrameY: CGFloat = 0
         for i in 1...(cellNum){
-            let cellBtn = UIButton(frame: CGRectMake(currentFrameX, currentFrameY, cellItemWidth, cellItemWidth))
-            cellBtn.backgroundColor = UIColor.clearColor()
+            let cellBtn = UIButton(frame: CGRect(x: currentFrameX,
+                                                 y: currentFrameY,
+                                                 width: cellItemWidth,
+                                                 height: cellItemWidth))
+            cellBtn.backgroundColor = UIColor.clear
             cellBtn.tag = i - 1
 
-            if let entities = cellEntities where entities.count > 0{
+            if let entities = cellEntities, entities.count > 0{
                 let cellDay = entities[i-1]
-                cellBtn.setTitle("\(cellDay.day)", forState: .Normal)
-                if cellDay.isCurrentMonthDay{
-                    cellBtn.setTitleColor(UIColor.blackColor(), forState: .Normal)
-                    cellBtn.addTarget(self, action: #selector(onCellItemClicked(_:)), forControlEvents: .TouchUpInside)
-                }else{
-                    cellBtn.setTitleColor(UIColorFromHexRGB(0x8995a2, alpha: 1), forState: .Normal)
+                if let day = cellDay.day{
+                    cellBtn.setTitle("\(day)", for: UIControlState())
                 }
-                cellBtn.titleLabel?.font = UIFont.systemFontOfSize(10)
+                if cellDay.isCurrentMonthDay{
+                    cellBtn.setTitleColor(UIColor.black, for: UIControlState())
+                    cellBtn.addTarget(self, action: #selector(onCellItemClicked(_:)), for: .touchUpInside)
+                }else{
+                    cellBtn.setTitleColor(UIColorFromHexRGB(0x8995a2, alpha: 1), for: UIControlState())
+                }
+                cellBtn.titleLabel?.font = UIFont.systemFont(ofSize: 10)
                 
                 if let emotionStyle = cellDay.emotionType{
-                    cellBtn.setTitle(nil, forState: .Normal)
+                    cellBtn.setTitle(nil, for: UIControlState())
                     self.setImageWithEmotion(emotionStyle, withCellBtn: cellBtn)
                 }
             }
@@ -91,26 +120,26 @@ class DMCalendarContentView: UIScrollView {
                 currentFrameX += cellItemWidth
             }
         }
-        self.contentSize = CGSizeMake(self.frame.width, cellItemWidth * CGFloat(rowNum))
+        self.contentSize = CGSize(width: self.frame.width, height: cellItemWidth * CGFloat(rowNum))
     }
 
-    func onCellItemClicked(sender: UIButton){
+    func onCellItemClicked(_ sender: UIButton){
         print("clicked Button is \(sender.tag)")
     }
     
     
-    func setImageWithEmotion(emotionType: Emotion, withCellBtn cellBtn: UIButton){
+    func setImageWithEmotion(_ emotionType: Emotion, withCellBtn cellBtn: UIButton){
         switch emotionType {
-        case .Cry:
-            cellBtn.setImage(UIImage(named: "btn_select_face_cry_pressed"), forState: .Normal)
-        case .Sad:
-            cellBtn.setImage(UIImage(named: "btn_select_face_upset_pressed"), forState: .Normal)
-        case .Happy:
-            cellBtn.setImage(UIImage(named: "btn_select_face_happy_pressed"), forState: .Normal)
-        case .Calm:
-            cellBtn.setImage(UIImage(named: "btn_select_face_bored_pressed"), forState: .Normal)
-        case .Angry:
-            cellBtn.setImage(UIImage(named: "btn_select_face_anger_pressed"), forState: .Normal)
+        case .cry:
+            cellBtn.setImage(UIImage(named: "btn_select_face_cry_pressed"), for: UIControlState())
+        case .sad:
+            cellBtn.setImage(UIImage(named: "btn_select_face_upset_pressed"), for: UIControlState())
+        case .happy:
+            cellBtn.setImage(UIImage(named: "btn_select_face_happy_pressed"), for: UIControlState())
+        case .calm:
+            cellBtn.setImage(UIImage(named: "btn_select_face_bored_pressed"), for: UIControlState())
+        case .angry:
+            cellBtn.setImage(UIImage(named: "btn_select_face_anger_pressed"), for: UIControlState())
         }
     }
     

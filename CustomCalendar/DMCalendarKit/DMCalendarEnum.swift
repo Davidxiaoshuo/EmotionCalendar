@@ -9,22 +9,22 @@
 import Foundation
 
 enum CalWeekDay: Int {
-    case UnKnown = 0
-    case Monday
-    case Tuesday
-    case Wednesday
-    case Thursday
-    case Friday
-    case Saturday
-    case Sunday
+    case unKnown = 0
+    case monday
+    case tuesday
+    case wednesday
+    case thursday
+    case friday
+    case saturday
+    case sunday
 }
 
 enum Emotion: Int{
-    case Cry
-    case Sad
-    case Happy
-    case Calm
-    case Angry
+    case cry
+    case sad
+    case happy
+    case calm
+    case angry
 }
 
 enum Month: String {

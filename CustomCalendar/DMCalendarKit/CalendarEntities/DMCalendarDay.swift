@@ -9,11 +9,11 @@
 import UIKit
 import Foundation
 
-let kSecondOfADay: NSTimeInterval = 24*60*60
+let kSecondOfADay: TimeInterval = 24*60*60
 
 class DMCalendarDay: NSObject {
 
-    var date: NSDate!
+    var date: Date!
     var month: NSInteger!
     var day: NSInteger!
     var year: NSInteger!
@@ -21,7 +21,7 @@ class DMCalendarDay: NSObject {
     var emotionType: Emotion?
     var isCurrentMonthDay: Bool = true
     
-    init(date: NSDate){
+    init(date: Date){
         super.init()
         self.date = date
         self.cacluateDate()
@@ -30,20 +30,20 @@ class DMCalendarDay: NSObject {
     init(year: NSInteger, month: NSInteger, day: NSInteger) {
         super.init()
         
-        let dateComponents = NSDateComponents()
+        var dateComponents = DateComponents()
         dateComponents.year = year
         dateComponents.month = month
         dateComponents.day = day
         dateComponents.hour = 0
         dateComponents.minute = 0
         dateComponents.second = 0
-        self.date = NSCalendar.currentCalendar().dateFromComponents(dateComponents)
+        self.date = Calendar.current.date(from: dateComponents)
         self.cacluateDate()
     }
     
     func cacluateDate(){
-        let gregorian = NSCalendar.currentCalendar()
-        let dateComponents = gregorian.components([NSCalendarUnit.Year, NSCalendarUnit.Month, NSCalendarUnit.Day, NSCalendarUnit.Weekday], fromDate: self.date!)
+        let gregorian = Calendar.current
+        let dateComponents = (gregorian as NSCalendar).components([NSCalendar.Unit.year, NSCalendar.Unit.month, NSCalendar.Unit.day, NSCalendar.Unit.weekday], from: self.date!)
         self.month = dateComponents.month
         self.day = dateComponents.day
         self.year = dateComponents.year
@@ -56,10 +56,10 @@ class DMCalendarDay: NSObject {
             (DMCalendarDateUtil.getCurrentDay() == self.day)
     }
     
-    func isEqualWithDay(calDay: DMCalendarDay)->Bool{
+    func isEqualWithDay(_ calDay: DMCalendarDay)->Bool{
         return calDay.year == self.year &&
             calDay.month == self.month &&
-            calDay == self.day
+            calDay.day == self.day
     }
     
     func getWeekDayName()->String{
@@ -87,22 +87,22 @@ class DMCalendarDay: NSObject {
     
     func getMeaningfulWeekDay()->CalWeekDay{
     
-        var wd: CalWeekDay = .UnKnown
+        var wd: CalWeekDay = .unKnown
         switch self.weekDay {
         case 1:
-            wd = .Sunday
+            wd = .sunday
         case 2:
-            wd = .Monday
+            wd = .monday
         case 3:
-            wd = .Tuesday
+            wd = .tuesday
         case 4:
-            wd = .Wednesday
+            wd = .wednesday
         case 5:
-            wd = .Thursday
+            wd = .thursday
         case 6:
-            wd = .Friday
+            wd = .friday
         case 7:
-            wd = .Saturday
+            wd = .saturday
         default:
             break
         }
@@ -110,35 +110,35 @@ class DMCalendarDay: NSObject {
     }
     
     func nexDay()->DMCalendarDay{
-        let nextDayDate = self.date.dateByAddingTimeInterval(kSecondOfADay)
+        let nextDayDate = self.date.addingTimeInterval(kSecondOfADay)
         let nextDay = DMCalendarDay(date: nextDayDate)
         return nextDay
     }
     
     func previousDay()->DMCalendarDay{
-        let previousDayDate = self.date.dateByAddingTimeInterval(-kSecondOfADay)
+        let previousDayDate = self.date.addingTimeInterval(-kSecondOfADay)
         let previousDay = DMCalendarDay(date: previousDayDate)
         return previousDay
     }
     
-    func compareWithCalDay(calDay: DMCalendarDay)->NSComparisonResult{
-        var result = NSComparisonResult.OrderedSame
+    func compareWithCalDay(_ calDay: DMCalendarDay)->ComparisonResult{
+        var result = ComparisonResult.orderedSame
         if self.year < calDay.year{
-            result = .OrderedAscending
+            result = .orderedAscending
         }else if self.year == calDay.year{
             if self.month < calDay.month{
-                result = .OrderedAscending
+                result = .orderedAscending
             }else if self.month == calDay.month{
                 if self.day == calDay.day{
-                    result = .OrderedSame
+                    result = .orderedSame
                 }else{
-                    result = .OrderedDescending
+                    result = .orderedDescending
                 }
             }else{
-                result = .OrderedDescending
+                result = .orderedDescending
             }
         }else{
-            result = .OrderedDescending
+            result = .orderedDescending
         }
         return result
     }

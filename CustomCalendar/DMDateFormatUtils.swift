@@ -17,14 +17,14 @@ class DMDateFormatUtils: NSObject {
      - returns: 时间戳
      */
     static func getCurrentTimestamp()->String{
-        let now = NSDate()
+        let now = Date()
         
         // 创建一个日期格式器
-        let dformatter = NSDateFormatter()
+        let dformatter = DateFormatter()
         dformatter.dateFormat = "yyyy年MM月dd日 HH:mm:ss"
         
         //当前时间的时间戳
-        let timeInterval:NSTimeInterval = now.timeIntervalSince1970
+        let timeInterval:TimeInterval = now.timeIntervalSince1970
         let timeStamp = Int(timeInterval)
         return "\(timeStamp)"
     }
@@ -36,14 +36,14 @@ class DMDateFormatUtils: NSObject {
      
      - returns: yyyy年MM月dd日 HH:mm:ss
      */
-    static func formatTimestampToTime(timestamp: String)->String{
-        let timeInterval:NSTimeInterval = NSTimeInterval((timestamp as NSString).doubleValue)
-        let date = NSDate(timeIntervalSince1970: timeInterval)
+    static func formatTimestampToTime(_ timestamp: String)->String{
+        let timeInterval:TimeInterval = TimeInterval((timestamp as NSString).doubleValue)
+        let date = Date(timeIntervalSince1970: timeInterval)
         
         //格式话输出
-        let dformatter = NSDateFormatter()
+        let dformatter = DateFormatter()
         dformatter.dateFormat = "yyyy年MM月dd日 HH:mm:ss"
-        return dformatter.stringFromDate(date)
+        return dformatter.string(from: date)
     }
     
     /**
@@ -53,9 +53,9 @@ class DMDateFormatUtils: NSObject {
      
      - returns: NSDate
      */
-    static func formatTimestampToDate(timestamp: String)->NSDate{
-        let timeInterval:NSTimeInterval = NSTimeInterval((timestamp as NSString).doubleValue)
-        let date = NSDate(timeIntervalSince1970: timeInterval)
+    static func formatTimestampToDate(_ timestamp: String)->Date{
+        let timeInterval:TimeInterval = TimeInterval((timestamp as NSString).doubleValue)
+        let date = Date(timeIntervalSince1970: timeInterval)
         return date
     }
     
@@ -67,9 +67,9 @@ class DMDateFormatUtils: NSObject {
      
      - returns: <#return value description#>
      */
-    static func stringToDate(stringTime:NSString,dateFormat:NSString?) -> NSDate{
+    static func stringToDate(_ stringTime:NSString,dateFormat:NSString?) -> Date{
         
-        let outputFormatter = NSDateFormatter()
+        let outputFormatter = DateFormatter()
         
         var dateForma = ""
         
@@ -77,7 +77,7 @@ class DMDateFormatUtils: NSObject {
         
         outputFormatter.dateFormat =  (dateFormat == nil  ?  (dateForma as NSString)  :  dateFormat!) as String
         
-        return outputFormatter.dateFromString(stringTime as String)!
+        return outputFormatter.date(from: stringTime as String)!
     }
     
     //**
@@ -104,13 +104,13 @@ class DMDateFormatUtils: NSObject {
 //        S: 毫秒
 //     - returns: 格式化好的时间
 //    */
-    static func formateDate(date: NSDate, widthSpecialFormatStr specialFormatStr: String)->String{
-        let dformatter = NSDateFormatter()
+    static func formateDate(_ date: Date, widthSpecialFormatStr specialFormatStr: String)->String{
+        let dformatter = DateFormatter()
         dformatter.dateFormat = specialFormatStr
-        return dformatter.stringFromDate(date)
+        return dformatter.string(from: date)
     }
     
-    static func formateDateToAAStyle(date: NSDate)->String{
+    static func formateDateToAAStyle(_ date: Date)->String{
         return DMDateFormatUtils.formateDate(date, widthSpecialFormatStr: "aa KK:mm")
     }
     

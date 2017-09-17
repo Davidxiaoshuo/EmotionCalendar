@@ -17,7 +17,7 @@ class DMCalendarDateUtil: NSObject {
      
      - returns: result
      */
-    static func isLeapYear(year: NSInteger)->Bool{
+    static func isLeapYear(_ year: NSInteger)->Bool{
         var isLeap = false
         if 0 == (year % 400){
             isLeap = true
@@ -27,11 +27,11 @@ class DMCalendarDateUtil: NSObject {
         return isLeap
     }
     
-    static func numberOfDaysInMonth(month: NSInteger)->NSInteger{
+    static func numberOfDaysInMonth(_ month: NSInteger)->NSInteger{
         return DMCalendarDateUtil.numberOfDaysInMonth(month, year: DMCalendarDateUtil.getCurrentYear())
     }
     
-    static func numberOfDaysInMonth(month: NSInteger, year: NSInteger)->NSInteger{
+    static func numberOfDaysInMonth(_ month: NSInteger, year: NSInteger)->NSInteger{
         let tempMonth = month - 1
         let daysOfMonth:[Int] = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
         var days = daysOfMonth[tempMonth]
@@ -48,37 +48,37 @@ class DMCalendarDateUtil: NSObject {
     static func getCurrentYear()->NSInteger{
         var ct = time(nil)
         let dt = localtime(&ct)
-        let year = dt.memory.tm_year + 1900
+        let year = (dt?.pointee.tm_year)! + 1900
         return NSInteger(year)
     }
     
     static func getCurrentMonth()->NSInteger{
         var ct = time(nil)
         let dt = localtime(&ct)
-        let month = dt.memory.tm_mon + 1
+        let month = (dt?.pointee.tm_mon)! + 1
         return NSInteger(month)
     }
     
     static func getCurrentDay()->NSInteger{
         var ct = time(nil)
         let dt = localtime(&ct)
-        let day = dt.memory.tm_mday
-        return NSInteger(day)
+        let day = dt?.pointee.tm_mday
+        return NSInteger(day!)
     }
     
-    static func getMonthWithDate(date: NSDate)->NSInteger{
-        let gregorian = NSCalendar.currentCalendar()
-        let dateComponents = gregorian.components([NSCalendarUnit.Year, NSCalendarUnit.Month, NSCalendarUnit.Day, NSCalendarUnit.Weekday], fromDate: date)
-        return NSInteger(dateComponents.month)
+    static func getMonthWithDate(_ date: Date)->NSInteger{
+        let gregorian = Calendar.current
+        let dateComponents = (gregorian as NSCalendar).components([NSCalendar.Unit.year, NSCalendar.Unit.month, NSCalendar.Unit.day, NSCalendar.Unit.weekday], from: date)
+        return NSInteger(dateComponents.month!)
     }
     
-    static func getDayWithDate(date: NSDate)->NSInteger{
-        let gregorian = NSCalendar.currentCalendar()
-        let dateComponents = gregorian.components([NSCalendarUnit.Year, NSCalendarUnit.Month, NSCalendarUnit.Day, NSCalendarUnit.Weekday], fromDate: date)
-        return NSInteger(dateComponents.day)
+    static func getDayWithDate(_ date: Date)->NSInteger{
+        let gregorian = Calendar.current
+        let dateComponents = (gregorian as NSCalendar).components([NSCalendar.Unit.year, NSCalendar.Unit.month, NSCalendar.Unit.day, NSCalendar.Unit.weekday], from: date)
+        return NSInteger(dateComponents.day!)
     }
     
-    static func dateSinceNowWithInterval(dayInterval: NSInteger)->NSDate{
-        return NSDate(timeIntervalSinceNow: Double(dayInterval)*24*60*60)
+    static func dateSinceNowWithInterval(_ dayInterval: NSInteger)->Date{
+        return Date(timeIntervalSinceNow: Double(dayInterval)*24*60*60)
     }
 }
